@@ -2,69 +2,84 @@
 
 > **"Cryptanalysis and Enhancement of A5/1 Stream Cipher Using Dynamic Clocking, Extended LFSR Architecture, and Nonlinear Output Combining"**
 
-Welcome to the **A5/1 Stream Cipher Cryptanalysis and Enhancement** project repository. This project explores the architectural vulnerabilities of the standard GSM A5/1 stream cipher, proposes a set of targeted cryptographic enhancements, and compares both implementations using empirical statistical tests.
+This repository contains the source code, experimental datasets, and detailed documentation for a cryptanalytic study of the A5/1 stream cipher used in GSM voice communications. It implements the standard A5/1 cipher, introduces a hardened "Enhanced" variant, and compares both using empirical statistical tests.
 
 ---
 
-## 📂 Repository Roadmap
+## Repository Structure
 
-Click the links below to navigate the documentation files and folders:
+Below is a guide to the files and directories in this repository:
 
-* **[src/](src/)** — C++ Source files:
-  * [a51_original.h](src/a51_original.h) & [a51_original.cpp](src/a51_original.cpp) — Core implementation of the standard A5/1 GSM cipher.
-  * [a51_enhanced.h](src/a51_enhanced.h) & [a51_enhanced.cpp](src/a51_enhanced.cpp) — Implementation of our proposed Enhanced A5/1 cipher.
-  * [analysis.h](src/analysis.h) & [analysis.cpp](src/analysis.cpp) — Statistics gathering engine (Avalanche, Entropy, Bias).
-  * [main.cpp](src/main.cpp) — Main test execution entry point.
-* **[docs/](docs/)** — Detailed documentation chapters:
-  * [architecture.md](docs/architecture.md) — Deep-dive into standard A5/1 LFSR configurations and majority-rule clocking.
-  * [enhancements.md](docs/enhancements.md) — Detailed explanation of our proposed modifications (4th LFSR, state-dependent clocking, nonlinear combining).
-  * [experiments.md](docs/experiments.md) — Steps and methodologies used in our Avalanche, Shannon Entropy, and Frequency Bias tests.
-  * [references.md](docs/references.md) — Academic bibliography and reference materials.
-* **[data/results/](data/results/)** — Exported CSV datasets containing experimental logs.
-* **[report/figures/](report/figures/)** — Generated high-resolution visualization graphs.
-* **[task.md](task.md)** — Project implementation progress tracker.
-* **[plan.md](plan.md)** — Original academic planning document.
-
----
-
-## 🛠️ Cipher Implementations Overview
-
-The project compares two cipher variations:
-
-1. **Original A5/1 Cipher:**
-   * **State Space:** 64 bits across 3 LFSRs (R1: 19-bit, R2: 22-bit, R3: 23-bit).
-   * **Clocking Rule:** Deterministic majority-rule based on 3 clocking tap bits.
-   * **Output Function:** Linear XOR combination of the registers' MSBs.
-
-2. **Enhanced A5/1 Cipher:**
-   * **State Space:** **89 bits** (+25 bits) with the addition of a **4th LFSR (R4)**, raising the complexity of brute-force and table-based lookup attacks.
-   * **Clocking Rule:** Dynamic, state-dependent multi-bit clocking decision computed from 8 register bits, preventing register isolation.
-   * **Output Function:** Nonlinear Boolean combining function ($a \oplus b \oplus (c \land d)$) to resist algebraic attacks.
+* **[src/](src/)** - C++ Source and Header Files:
+  * [a51_original.h](src/a51_original.h) & [a51_original.cpp](src/a51_original.cpp) - Implementation of the standard A5/1 GSM cipher.
+  * [a51_enhanced.h](src/a51_enhanced.h) & [a51_enhanced.cpp](src/a51_enhanced.cpp) - Implementation of the proposed Enhanced A5/1 cipher.
+  * [analysis.h](src/analysis.h) & [analysis.cpp](src/analysis.cpp) - Cryptanalytic testing suite (Avalanche, Entropy, and Bias).
+  * [main.cpp](src/main.cpp) - Program entry point.
+* **[docs/](docs/)** - Project Documentation Chapters:
+  * [architecture.md](docs/architecture.md) - Analysis of standard A5/1 LFSR taps and clocking.
+  * [enhancements.md](docs/enhancements.md) - Theoretical specification of the enhancements.
+  * [experiments.md](docs/experiments.md) - Test methodologies and verification.
+  * [references.md](docs/references.md) - Bibliography.
+* **[data/results/](data/results/)** - Output folder containing generated CSV data logs.
+* **[report/figures/](report/figures/)** - Output folder containing generated comparison graphs.
+* **[task.md](task.md)** - Progress tracking sheet.
+* **[plan.md](plan.md)** - Core project planning document.
+* **[LICENSE](LICENSE)** - License text (MIT License).
 
 ---
 
-## 📊 Experimental Results
+## Clone and Setup Instructions
 
-Tests were performed over $1,000,000$ bits of generated keystreams. The empirical comparison is summarized below:
+To download and run this project locally, execute the following commands in your terminal:
 
-| Metric Tested | Ideal Value | Original A5/1 | Enhanced A5/1 | Outcome & Improvement |
+```bash
+# Clone the repository
+git clone https://github.com/ahmadVader0/A5-1.git
+
+# Navigate into the project directory
+cd A5-1
+
+# Compile the source files using g++
+g++ -o a51_project src/main.cpp src/a51_original.cpp src/a51_enhanced.cpp src/analysis.cpp -Isrc
+
+# Execute the binary to run the tests and generate results
+./a51_project
+```
+
+---
+
+## Implementation Comparison
+
+| Design Component | Standard A5/1 | Enhanced A5/1 | Security Impact |
+| :--- | :--- | :--- | :--- |
+| **State Space** | 64 bits (3 LFSRs) | 89 bits (4 LFSRs) | Increases brute-force and table-lookup complexity by $2^{25}$ |
+| **Clocking Rule** | Predictable majority rule (3 taps) | State-dependent dynamic rule (8 taps) | Mitigates divide-and-conquer correlation attacks |
+| **Output Combining** | Linear XOR function | Nonlinear Boolean function ($a \oplus b \oplus (c \land d)$) | Defeats linear cryptanalysis and algebraic solvers |
+
+---
+
+## Experimental Results
+
+The ciphers were evaluated over a sequence of $1,000,000$ bits. The statistical results are summarized below:
+
+| Test Metric | Ideal Target | Standard A5/1 | Enhanced A5/1 | Evaluation |
 | :--- | :--- | :--- | :--- | :--- |
-| **Avalanche Effect (Mean)** | 50.0000% | 49.9527% | **50.0328%** | **Improved** (+0.0145% closer to ideal) |
-| **Avalanche Effect (Std Dev)** | 0.0000% | 0.5298% | **0.4886%** | **Improved** (7.8% tighter distribution) |
-| **Shannon Entropy (4-bit)** | 1.000000 | 0.999990 | 0.999990 | Equal / Near-perfect |
-| **Shannon Entropy (8-bit)** | 1.000000 | 0.999836 | 0.999811 | Similar |
-| **Shannon Entropy (16-bit)** | 1.000000 | 0.946236 | 0.946130 | Similar |
-| **Frequency Bias (1s / 0s)** | 50% / 50% | 50.0777% / 49.9223% | **49.9928% / 50.0072%** | **Major Gain** (Highly balanced) |
-| **Frequency Bias (Absolute)** | 0.0000% | 0.077700% | **0.007200%** | **90.73% reduction in bias** |
+| **Avalanche Effect (Mean)** | 50.0000% | 49.9527% | 50.0328% | Improved (+0.0145% closer to ideal) |
+| **Avalanche Effect (Std Dev)** | 0.0000% | 0.5298% | 0.4886% | Improved (7.8% tighter deviation) |
+| **Shannon Entropy (4-bit)** | 1.000000 | 0.999990 | 0.999990 | Balanced and uniform |
+| **Shannon Entropy (8-bit)** | 1.000000 | 0.999836 | 0.999811 | Similar performance |
+| **Shannon Entropy (16-bit)** | 1.000000 | 0.946236 | 0.946130 | Similar performance |
+| **Frequency Bias (1s / 0s)** | 50% / 50% | 50.0777% / 49.9223% | 49.9928% / 50.0072% | Balanced bit distribution |
+| **Frequency Bias (Absolute)** | 0.0000% | 0.077700% | 0.007200% | 90.73% reduction in frequency bias |
 
 ---
 
-## 📈 Visualizations
+## Visualizations
 
-The generated metrics are plotted and saved. Below are the charts comparing the ciphers:
+The generated metrics distributions are illustrated in the figures below:
 
-### 1. Overall Metrics Comparison
-This dashboard displays the comparative box plots of the Avalanche Effect, Shannon Entropy comparison by block sizes, and Frequency distributions.
+### 1. Overall Metrics Dashboard
+This chart displays the comparative box plots of the Avalanche Effect, Shannon Entropy comparison by block sizes, and Frequency distributions.
 
 ![All Metrics Comparison](report/figures/all_metrics_comparison.png)
 
@@ -75,23 +90,6 @@ This chart compares the CDF lines of the ciphers and checks the normality of the
 
 ---
 
-## 🚀 Building and Running
+## License
 
-### Prerequisites
-To compile the C++ source code, you need a C++ compiler supporting standard features (e.g., `g++`):
-```bash
-g++ --version
-```
-
-### Compiling the Project
-Compile the executable from the repository root:
-```bash
-g++ -o a51_project src/main.cpp src/a51_original.cpp src/a51_enhanced.cpp src/analysis.cpp -Isrc
-```
-
-### Running the Experiments
-Execute the binary to run the avalanche, entropy, and frequency experiments and overwrite the CSV datasets:
-```bash
-./a51_project
-```
-The output logs will print to the console and write results to the [data/results/](data/results/) directory.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

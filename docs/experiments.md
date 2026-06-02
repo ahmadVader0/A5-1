@@ -131,15 +131,12 @@ This chart displays the Cumulative Distribution Functions (CDFs) for both Avalan
 ## Reproducibility
 
 ```bash
-# Compile
-g++ -o a51_project.exe src/main.cpp src/a51_original.cpp src/a51_enhanced.cpp src/analysis.cpp -Isrc
+# Compile the C++ program
+g++ -o a51_project src/main.cpp src/a51_original.cpp src/a51_enhanced.cpp src/analysis.cpp -Isrc
 
 # Run all experiments
-./a51_project.exe
-
-# Generate plots
-cd ../scripts
-python plot_results.py
+./a51_project
 ```
 
 All random seeds are fixed in `src/main.cpp` for identical results across runs.
+

@@ -18,5 +18,6 @@
 - [x] Run experiments, check output CSVs
 
 ## Phase 5: Python Visualization
-- [x] `scripts/visualize_results.py` — Generate comparison plots
+- [x] `report/figures/` — Generate comparison plots (figures completed and committed)
+
 
