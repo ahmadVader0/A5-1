@@ -1,0 +1,30 @@
+# Compiled Binaries and Objects
+a51_project
+a51_project.exe
+test_truth
+test_truth.exe
+*.o
+*.out
+*.exe
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
