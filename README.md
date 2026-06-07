@@ -4,7 +4,6 @@
 
 This repository contains the source code, experimental datasets, and detailed documentation for a cryptanalytic study of the A5/1 stream cipher used in GSM voice communications. It implements the standard A5/1 cipher, introduces a hardened "Enhanced" variant, and compares both using empirical statistical tests.
 
----
 
 ## Repository Structure
 
